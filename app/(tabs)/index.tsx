@@ -1,75 +1,80 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Text, View, Pressable } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
+import { WorkoutButton } from "@/components/WorkoutButton";
+import { Calendar } from "react-native-calendars";
+import { useState } from "react";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function Index() {
+  const [ workout, setWorkout ] = useState(["Push", "Pull", "L", "Rest"]);
+  const [ steps, setSteps ] = useState(0)
 
-export default function HomeScreen() {
+  const [ isDaySelected, setIsDaySelected ] = useState<string | null>(null)
+  const [markedDatesState, setMarkedDatesState] = useState<Record<string, { selected: boolean; selectedColor: string }>>({})
+  
+
+  const handleWorkoutDone = () => {
+    if (!isDaySelected) {
+      console.log("no date selected")
+      return; // Do nothing if no date is selected
+    }
+    console.log('hellow orkout done')
+    const newMarkedDates = { ...markedDatesState };
+    if (newMarkedDates[isDaySelected]) {
+      delete newMarkedDates[isDaySelected];
+    } else {
+      newMarkedDates[isDaySelected] = {
+        selected: true,
+        selectedColor: "green",
+      };
+    }
+    setMarkedDatesState(newMarkedDates);
+  }
+ 
+
+  const handleRestDay = () => {
+    if (!isDaySelected) {
+      return; // Do nothing if no date is selected
+    }
+  }
+  
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <View className="flex justify-center items-center flex-1 gap-2">
+      <LinearGradient
+        colors={["#030014", "#030040"]}
+        style={{position: "absolute", left: 0, top: 0, bottom: 0, right: 0,
+          height: "100%"
+        }}
+        start={{x:0, y:1}}
+        end={{x:0, y:1}}
+      ></LinearGradient>
+      <Calendar 
+          headerStyle={{
+            backgroundColor: "green",
+            borderRadius: 10
+          }}
+          style={{
+            backgroundColor: "green",
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            paddingBottom: 4,
+            width: 400,
+          }}
+          showSixWeeks={true}
+          onDayPress={day => {
+            setIsDaySelected(day.dateString)
+          }}
+          markedDates={markedDatesState}
+          theme={{
+            monthTextColor: "white"
+          }}
+          enableSwipeMonths={true}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <Text className="color-slate-50">Todays workout is: {workout[0]}</Text>
+        <WorkoutButton handler={handleWorkoutDone} text={"Workout Done!"} color={"blue"} hover={"blue"} />
+        <WorkoutButton handler={handleRestDay} text={"Rest"} color={"red"} hover={"red"}/>
+        <Text className="color-slate-50" >
+          Notification Test 
+        </Text>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
