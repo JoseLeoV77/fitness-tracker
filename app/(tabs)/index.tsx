@@ -1,41 +1,15 @@
-import { Text, View, Pressable } from "react-native";
+import { Text, View } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { WorkoutButton } from "@/components/WorkoutButton";
 import { Calendar } from "react-native-calendars";
 import { useState } from "react";
+import { useWorkoutScheduler } from "@/hooks/useWorkoutScheduler";
 
 export default function Index() {
   const [ workout, setWorkout ] = useState(["Push", "Pull", "L", "Rest"]);
   const [ steps, setSteps ] = useState(0)
 
-  const [ isDaySelected, setIsDaySelected ] = useState<string | null>(null)
-  const [markedDatesState, setMarkedDatesState] = useState<Record<string, { selected: boolean; selectedColor: string }>>({})
-  
-
-  const handleWorkoutDone = () => {
-    if (!isDaySelected) {
-      console.log("no date selected")
-      return; // Do nothing if no date is selected
-    }
-    console.log('hellow orkout done')
-    const newMarkedDates = { ...markedDatesState };
-    if (newMarkedDates[isDaySelected]) {
-      delete newMarkedDates[isDaySelected];
-    } else {
-      newMarkedDates[isDaySelected] = {
-        selected: true,
-        selectedColor: "green",
-      };
-    }
-    setMarkedDatesState(newMarkedDates);
-  }
- 
-
-  const handleRestDay = () => {
-    if (!isDaySelected) {
-      return; // Do nothing if no date is selected
-    }
-  }
+  const { setIsDaySelected, markedDatesState, handleWorkoutDone, handleRestDay } = useWorkoutScheduler();
   
   return (
     <View className="flex justify-center items-center flex-1 gap-2">
@@ -74,6 +48,9 @@ export default function Index() {
         <WorkoutButton handler={handleRestDay} text={"Rest"} color={"red"} hover={"red"}/>
         <Text className="color-slate-50" >
           Notification Test 
+        </Text>
+        <Text className="color-slate-50">
+          Steps Test
         </Text>
     </View>
   );

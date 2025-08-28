@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
+import { CreateButton } from '@/components/CreateWorkoutButton';
 
 export default function nutrition() {
   return (
@@ -14,6 +15,7 @@ export default function nutrition() {
         end={{x:0, y:1}}
       ></LinearGradient>
       <Text>nutrition</Text>
+      <CreateButton href='CreateRecipe' />
     </View>
   )
 }

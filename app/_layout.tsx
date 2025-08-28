@@ -14,6 +14,12 @@ export default function RootLayout() {
         presentation: 'modal',
         title: 'Create Workout',
         headerShown:false }} />
+      <Stack.Screen 
+      name="screens/CreateRecipe" 
+      options={{ 
+        presentation: 'modal',
+        title: 'Create Recipe',
+        headerShown:false }} />
     </Stack>
   )
 }
