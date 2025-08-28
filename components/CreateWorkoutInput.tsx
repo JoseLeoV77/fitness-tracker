@@ -3,20 +3,35 @@ import React from 'react'
 
 interface CreateWorkoutInputProps {
   workoutName: string,
-  additionalWeight: string
+  setWorkoutName: (text: string) => void,
+  additionalWeight: boolean,
+  addSuperset: boolean
 }
 
-export const CreateWorkoutInput = ({workoutName, additionalWeight}: CreateWorkoutInputProps) => {
+export const CreateWorkoutInput = ({workoutName, setWorkoutName, additionalWeight, addSuperset }: CreateWorkoutInputProps) => {
   return (
     <View>
       <TextInput
         className='bg-white w-2/3 rounded-md'
         value={workoutName}
+        onChangeText={setWorkoutName}
       />
-      <TextInput 
-        className='bg-white w-2/3 rounded-md'
-        value={additionalWeight}
-      />
+      {
+        additionalWeight &&
+        <TextInput 
+          className='bg-white w-2/3 rounded-md'
+          placeholder='1kg'
+        />
+      }
+      {
+        addSuperset &&
+        <TextInput 
+          className='bg-white w-2/3 rounded-md'
+          onChangeText={setWorkoutName}
+          placeholder='Add another exercise'
+        />
+      }
+      
     </View>
   )
 }
