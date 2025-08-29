@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { WorkoutButton } from "@/components/WorkoutButton";
-import { Calendar } from "react-native-calendars";
+import { Calendar } from "react-native-calendars"; //Credit
 import { useState } from "react";
 import { useWorkoutScheduler } from "@/hooks/useWorkoutScheduler";
 

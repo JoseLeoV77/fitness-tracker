@@ -20,6 +20,12 @@ export default function RootLayout() {
         presentation: 'modal',
         title: 'Create Recipe',
         headerShown:false }} />
+        <Stack.Screen 
+      name="screens/WorkoutDetails" 
+      options={{ 
+        presentation: 'modal',
+        title: 'WorkoutDetails',
+        headerShown:false }} />
     </Stack>
   )
 }

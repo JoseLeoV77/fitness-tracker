@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
-import { CreateButton } from '@/components/CreateWorkoutButton';
+import { CreateButton } from '@/components/CreateButton';
 
 export default function nutrition() {
   return (
