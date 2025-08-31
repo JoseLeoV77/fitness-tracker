@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, ScrollView, FlatList } from 'react-native'
 import { CreateButton } from '@/components/CreateButton'
-import RoutineSelector from '@/components/RoutineSelector'
+import { RoutineSelector } from '@/components/RoutineSelector'
 import { WorkoutCard } from '../../components/WorkoutCard'
 import { router } from 'expo-router'
 
@@ -46,8 +46,8 @@ const Workout = () => {
 };
 
   return (
-    <View className='flex-1 bg-[#030040]'>
-      <View className='flex flex-row'>
+    <View className='flex-1 bg-[#030040] items-center'>
+      <View className='flex flex-row gap-2 h-32 w-full items-center justify-center bg-slate-900 rounded-xl'>
         {daysOfWeek.map(day => (
         <RoutineSelector
             key={day}
@@ -58,27 +58,26 @@ const Workout = () => {
         />
         ))}
       </View>
-      <View className='flex p-12 gap-12 flex-row flex-wrap bg-[#030040] w-full'>      
-          {
-            mockWorkouts.length > 0 
-            ? (mockWorkouts.map(workout => (
-              <WorkoutCard 
-              key={workout.id} 
-              id={workout.id} 
-              name={workout.name}
-              onPress = {()=> handleWorkoutPress(workout.id)}
-              />
-            )))
-            : (
-              <Text className='color-white'>No workouts found.</Text>
-            ) 
-            
-          }
-        <View className='flex flex-row gap-2'>
+      <FlatList 
+        data={mockWorkouts} 
+        renderItem={({ item }) => (<WorkoutCard id={item.id} name={item.name} onPress={() => handleWorkoutPress(item.id)}
+        />)}
+        keyExtractor={item => item.id}
+        contentContainerStyle={{
+          padding: 12, 
+          gap: 32, 
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          backgroundColor: '#030040'
+        }}
+        ListEmptyComponent={()=> <Text className='color-white'>No workouts found.</Text>}
+        ListFooterComponent={()=>(
+          <View className='flex flex-row gap-2 '>
           <CreateButton href='CreateWorkout'/>
-          <Text className='color-white'>Create a Workout! </Text>
+          <Text className='color-black bg-slate-300 w-16 h-14 flex items-center justify-center rounded-lg p-4'>Create a Workout! </Text>
         </View>
-      </View>
+        )}
+        />
     </View>
   )
 }

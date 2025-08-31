@@ -7,13 +7,11 @@ interface RoutineSelectorProps{
   workoutName?: string
 } 
 
-const RoutineSelector = ({day, workoutName, onPress, isSelected}: RoutineSelectorProps) => {
+export const RoutineSelector = ({day, workoutName, onPress, isSelected}: RoutineSelectorProps) => {
   return (
-    <Pressable className={`bg-white p-4 ${isSelected ? 'border-2 border-yellow-500' : ''}`} onPress={onPress}>
+    <Pressable className={`bg-white p-3 rounded-md top-3 h-16 border-blue-700 border-2 ${isSelected ? 'border-2 border-yellow-500' : ''}`} onPress={onPress}>
       <Text>{day}</Text>
       <Text>{workoutName || 'FREE'}</Text>
     </Pressable>
   )
 }
-
-export default RoutineSelector
