@@ -18,6 +18,7 @@ export const CreateExerciseInput = ({exerciseName, setExerciseName, additionalWe
         className='bg-white w-2/3 rounded-md'
         value={exerciseName}
         onChangeText={setExerciseName}
+        placeholder='Add Exercise'
       />
       {
         additionalWeight &&

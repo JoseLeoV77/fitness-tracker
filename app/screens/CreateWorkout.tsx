@@ -1,64 +1,34 @@
-import React, { useState } from 'react'
-import { View, Text, Pressable, TextInput } from 'react-native'
-import { AddToExerciseButton } from '@/components/AddToWorkoutButton'
+import React from 'react'
+import { useWorkoutSet } from '@/hooks/useWorkoutSet'
+import { View, Text, ScrollView, TextInput, Pressable } from 'react-native'
 import { router } from 'expo-router'
-import { CreateExerciseInput } from '@/components/CreateWorkoutInput'
+import { CreateSet } from '@/components/CreateSet'
 
 const CreateWorkout = () => {
-  const [ exerciseName, setExerciseName ] = useState("")
-  const [ addWeight, setAddWeight ] = useState(false)
-  const [ isSuperset, setIsSuperset ] = useState(false)
-  const [ additionalWeight, setAdditionalWeight ] = useState("")
-  const [ additionalExercise, setAdditionalExercise ] = useState("") 
-
-  function handlePress(btnId: string){
-    if(btnId === "btnSuperset"){
-      setIsSuperset(!isSuperset)
-    } 
-    
-    if(btnId === "btnWeight"){
-      console.log("here")
-      setAddWeight(!addWeight)
-    }  
-  } 
-
-  function handleSaveWorkout(){
-    const newWorkout = {
-      name: exerciseName,
-      isSuperset, 
-      additionalWeight,
-      additionalExercise
-    }
-    console.log("Workout data sent to SQLite", newWorkout)
-  }
-
-    function handleNumberInput(text:string){
-    const numericValue = text.replace(/[^0-9.]/g, '')
-    setAdditionalWeight(numericValue)
-  }
+  const { handleSaveWorkout } = useWorkoutSet()
 
   return (
-    <View className="bg-[#030040] flex-1">
+    <ScrollView className="bg-[#030040] flex flex-1 p-5 gap-14">
       <View className='flex gap-2'>
-        <TextInput placeholder='Name your workout' className='bg-white'/>
-
-        <CreateExerciseInput exerciseName={exerciseName} additionalWeight={addWeight} addSuperset={isSuperset} setExerciseName={setExerciseName} setAdditionalWeight={handleNumberInput} setAdditionalExercise={setAdditionalExercise}/>
-        
-        <AddToExerciseButton handler={() => handlePress('btnWeight')} description="Additional Weight?"/>
-        <AddToExerciseButton handler={() => handlePress('btnSuperset')} description="Add Superset?"/>
-        
-        <Pressable onPress={handleSaveWorkout} className='bg-white'>
-          <Text>
-            Save Workout!
+        <TextInput placeholder='Name your workout' className='bg-white rounded-lg'/>
+        <View className='flex gap-8'>
+          <CreateSet />
+          <CreateSet />
+          <CreateSet />
+          <CreateSet />
+        </View>
+        <View>
+          <Pressable onPress={handleSaveWorkout} className='bg-white'>
+            <Text>
+              Save Workout!
+            </Text>
+          </Pressable>
+          <Text onPress={router.back} className='flex bg-slate-500 w-16 h-16 rounded-3xl text-center '>
+            Go Back!
           </Text>
-        </Pressable>
+        </View>
       </View>
-      <View>
-        <Text onPress={router.back} className='flex bg-slate-500 w-16 h-16 rounded-3xl text-center '>
-          Go Back!
-        </Text>
-      </View>
-    </View>
+    </ScrollView>
   )
 }
 

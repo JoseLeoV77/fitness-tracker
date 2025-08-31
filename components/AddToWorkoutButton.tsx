@@ -8,8 +8,8 @@ interface AddToExerciseButtonProps {
 
 export const AddToExerciseButton = ({ handler, description }: AddToExerciseButtonProps) => {
   return (
-    <Pressable className='bg-white' onPress={handler}>
-      <Text>
+    <Pressable className='bg-white w-32 rounded-lg flex ' onPress={handler}>
+      <Text className='text-center'>
         {description}
       </Text>
     </Pressable>
