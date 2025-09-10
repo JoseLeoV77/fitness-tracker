@@ -3,7 +3,12 @@ module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        darkblue: '#030014',
+        primaryblue: '#030040'
+      }
+    },
   },
   plugins: [],
   safelist: [
@@ -13,5 +18,5 @@ module.exports = {
     'hover:bg-red-950',
     'hover:bg-blue-950',
     'hover:bg-green-950',
-  ]
+  ],
 }

@@ -1,15 +1,36 @@
-import { Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { WorkoutButton } from "@/components/WorkoutButton";
 import { Calendar } from "react-native-calendars"; //Credit
 import { useState } from "react";
 import { useWorkoutScheduler } from "@/hooks/useWorkoutScheduler";
+import notifee from '@notifee/react-native';
 
 export default function Index() {
   const [ workout, setWorkout ] = useState(["Push", "Pull", "L", "Rest"]);
   const [ steps, setSteps ] = useState(0)
+  
 
   const { setIsDaySelected, markedDatesState, handleWorkoutDone, handleRestDay } = useWorkoutScheduler();
+
+  async function onDisplayNotification() {
+    await notifee.requestPermission()
+
+    const channelId = await notifee.createChannel({
+      id: 'default', 
+      name: 'Default Channel'
+    })
+
+    await notifee.displayNotification({
+      title: "Workout: ",
+      android: {
+        channelId,
+        pressAction: {
+          id: 'default',
+        },
+      },
+    })
+  }
   
   return (
     <View className="flex justify-center items-center flex-1 gap-2">
@@ -46,9 +67,7 @@ export default function Index() {
       <Text className="color-slate-50">Todays workout is: {workout[0]}</Text>
         <WorkoutButton handler={handleWorkoutDone} text={"Workout Done!"} color={"blue"} hover={"blue"} />
         <WorkoutButton handler={handleRestDay} text={"Rest"} color={"red"} hover={"red"}/>
-        <Text className="color-slate-50" >
-          Notification Test 
-        </Text>
+        <Button title="Display Notification" onPress={() => onDisplayNotification()}/>
         <Text className="color-slate-50">
           Steps Test
         </Text>

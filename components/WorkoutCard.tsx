@@ -2,9 +2,9 @@ import { Pressable, Text } from 'react-native'
 import React from 'react'
 
 interface WorkoutCardProp {
-  id: string,
+  id: number,
   name: string
-  onPress: (workoutId: string) => void;
+  onPress: (workoutId: number) => void;
 }
 
 export function WorkoutCard({id, name, onPress}: WorkoutCardProp) {
