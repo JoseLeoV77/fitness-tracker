@@ -74,7 +74,6 @@ export const useCreateWorkout = () => {
         }
       });
 
-      alert("Workout saved successfully!");
       router.back();
 
     } catch (error) {

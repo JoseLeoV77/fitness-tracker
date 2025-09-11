@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { View, Text, FlatList, Pressable } from 'react-native'
 import { CreateButton } from '@/components/CreateButton'
 import { RoutineSelector } from '@/components/RoutineSelector'
 import { WorkoutCard } from '../../components/WorkoutCard'
-import { router } from 'expo-router'
+import { router, useFocusEffect } from 'expo-router'
 import { useSQLiteContext } from 'expo-sqlite'
 
 interface WorkoutProps {
@@ -28,14 +28,15 @@ const Workout = () => {
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-  useEffect(() => {
-    async function getWorkouts() {
-      const fetchedWorkouts = await db.getAllAsync<WorkoutProps>('SELECT * from workouts')
-      setWorkouts(fetchedWorkouts)
-      console.log(fetchedWorkouts)
-    }
-    getWorkouts();
-  }, [db]); 
+  useFocusEffect(
+    useCallback(() => {
+      async function getWorkouts() {
+        const fetchedWorkouts = await db.getAllAsync<WorkoutProps>('SELECT * from workouts')
+        setWorkouts(fetchedWorkouts)
+        console.log(fetchedWorkouts)
+      }
+      getWorkouts();
+    }, [db])); 
 
   function getWorkoutName (id: number | null) {
     if (!id) {

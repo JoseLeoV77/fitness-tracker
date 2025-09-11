@@ -17,7 +17,6 @@ const WorkoutDetails = () => {
   const workoutId = Number(id)
 
   useEffect(()=>{
-    
     async function getWorkouts() {
       const workoutList = await db.getAllAsync<ExerciseDetail>(`SELECT E.name, W.reps, W.superset_id
       FROM workouts_to_exercises AS W 
@@ -25,7 +24,6 @@ const WorkoutDetails = () => {
       ON W.exercise_id == E.id 
       WHERE W.workout_id == ?`, [workoutId])
       setExercises(workoutList)
-
     }
   
     if(workoutId){

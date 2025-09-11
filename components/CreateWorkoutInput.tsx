@@ -1,5 +1,5 @@
-import { View, TextInput, Text } from 'react-native'
-import React, { useState } from 'react'
+import { View, TextInput } from 'react-native'
+import React from 'react'
 
 interface CreateExerciseInputProps {
   exerciseName: string;
