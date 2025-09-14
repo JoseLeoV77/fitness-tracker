@@ -6,7 +6,7 @@ import './global.css'
 
 import { schema } from '../db/schema.js';
 
-export const DATABASE_NAME = 'fitness_v2'
+export const DATABASE_NAME = 'fitness_v3'
 
 async function initDb(db: any) {
   try {
@@ -28,7 +28,7 @@ export default function RootLayout() {
 
   return (
     <SQLiteProvider 
-    databaseName="fitness_v2"
+    databaseName={DATABASE_NAME}
     onInit={initDb}
     options={{ enableChangeListener: true }}>
       <Stack>

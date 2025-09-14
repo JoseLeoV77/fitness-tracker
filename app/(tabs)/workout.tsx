@@ -30,12 +30,24 @@ const Workout = () => {
 
   useFocusEffect(
     useCallback(() => {
-      async function getWorkouts() {
-        const fetchedWorkouts = await db.getAllAsync<WorkoutProps>('SELECT * from workouts')
-        setWorkouts(fetchedWorkouts)
-        console.log(fetchedWorkouts)
+      async function fetchData() {
+        try{
+          const fetchedWorkouts = await db.getAllAsync<WorkoutProps>('SELECT * from workouts')
+          setWorkouts(fetchedWorkouts)
+          console.log(fetchedWorkouts)
+          const fetchedRoutine = await db.getAllAsync<{ 'order': number, workout_id: number }>('SELECT "order", workout_id FROM routines_to_workouts WHERE routine_id IS NULL');
+          
+          const newRoutine: Record<string, string | null> = { Mon: null, Tue: null, Wed: null, Thu: null, Fri: null, Sat: null, Sun: null };
+            fetchedRoutine.forEach(row => {
+              const day = daysOfWeek[row.order - 1];
+              newRoutine[day] = row.workout_id.toString();
+            });
+            setRoutine(newRoutine);
+        } catch (e) {
+          console.log(e)
+        }
       }
-      getWorkouts();
+      fetchData();
     }, [db])); 
 
   function getWorkoutName (id: number | null) {
@@ -53,9 +65,7 @@ const Workout = () => {
   async function deleteFromWorkout (workoutId:string){
     try{
       await db.runAsync('DELETE FROM workouts WHERE id = (?)', [workoutId])
-      const workoutsCopy = workouts
-      const workoutToDelete = workoutsCopy.filter((workout)=> workout.id !== Number(workoutId))
-      setWorkouts(workoutToDelete)
+      setWorkouts(prev => prev.filter((workout)=> workout.id !== Number(workoutId)))
       setDeleteWorkout(false)
       } catch(err){
         console.log(err)
@@ -63,32 +73,62 @@ const Workout = () => {
   }
 
   async function handleWorkoutPress (workoutId: string){
+
     if (selectedDay) {
-        setRoutine({ ...routine, [selectedDay]: workoutId });
-        setSelectedDay(null);
-        setDeleteWorkout(false)
+      const order = daysOfWeek.indexOf(selectedDay) + 1
+      setRoutine(prev => ({ ...prev, [selectedDay]: workoutId }));
+      if(order > 0){
+        try{
+          await db.runAsync('INSERT OR REPLACE INTO routines_to_workouts (order, workout_id) VALUES (?, ?)', [order, workoutId])
+          } catch (e){
+            console.log(e)
+          }
+        }
+      setSelectedDay(null);
+      setDeleteWorkout(false)
     } else if (deleteWorkout) {
       deleteFromWorkout(workoutId)
     } else {
         router.push(`/screens/WorkoutDetails?id=${workoutId}`);
     }
-};
+  };
 
   function handleWorkoutDelete (){
     setDeleteWorkout(!deleteWorkout)  
   }
 
+  async function handleRemoveFromRoutine(order: number){
+      try {
+        console.log('hR', order)
+      await db.runAsync(
+        'DELETE FROM routines_to_workouts WHERE "order" = ? AND routine_id IS NULL',
+        [order]
+      );
+
+      const day = daysOfWeek[order - 1];
+      setRoutine(prev => ({ ...prev, [day]: null }));
+    } catch (err) {
+      console.error("Failed to remove from routine:", err);
+    }
+  }
+  console.log('routine: ',routine)
+
   return (
     <View className='flex-1 bg-primaryblue items-center relative'>
-      <View className='flex flex-row gap-2 h-32 w-full items-center justify-center bg-darkblue rounded-xl'>
+      <View className='flex flex-row gap-2 h-40 w-full items-center justify-center bg-darkblue rounded-xl'>
         {daysOfWeek.map(day => (
-        <RoutineSelector
-            key={day}
-            day={day}
-            workoutName={getWorkoutName(parseInt(routine[day]!))} 
-            onPress={() => handleDayPress(day)}
-            isSelected={selectedDay === day}
-        />
+        <View key={day} className='flex gap-2'>
+          {}
+          <Pressable className='bg-white h-16 border-2 border-orange-500 p-2 text-center w-20 justify-center rounded' onPress={() => handleRemoveFromRoutine(daysOfWeek.indexOf(day) + 1 )}>
+            <Text className='text-center'>Remove</Text>
+          </Pressable>
+          <RoutineSelector
+              day={day}
+              workoutName={getWorkoutName(parseInt(routine[day]!))} 
+              onPress={() => handleDayPress(day)}
+              isSelected={selectedDay === day}
+          />
+        </View>
         ))}
       </View>
       <FlatList 

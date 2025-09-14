@@ -27,11 +27,10 @@ CREATE TABLE \`routines\` (
 
 CREATE TABLE \`routines_to_workouts\` (
   \`workout_id\` integer NOT NULL,
-  \`routine_id\` integer NOT NULL,
-  \`order\` integer NOT NULL,
-  PRIMARY KEY(\`routine_id\`, \`workout_id\`),
-  FOREIGN KEY (\`workout_id\`) REFERENCES \`workouts\`(\`id\`) ON UPDATE no action ON DELETE no action,
-  FOREIGN KEY (\`routine_id\`) REFERENCES \`routines\`(\`id\`) ON UPDATE no action ON DELETE no action
+  \`routine_id\` integer,
+  \`order\` integer PRIMARY KEY NOT NULL,
+  FOREIGN KEY (\`workout_id\`) REFERENCES \`workouts\`(\`id\`) ON DELETE CASCADE,
+  FOREIGN KEY (\`routine_id\`) REFERENCES \`routines\`(\`id\`) ON DELETE CASCADE
 );
 
 CREATE TABLE \`users\` (
