@@ -62,7 +62,21 @@ CREATE TABLE \`workouts_to_exercises\` (
   FOREIGN KEY (\`workout_id\`) REFERENCES \`workouts\`(\`id\`) ON UPDATE no action ON DELETE cascade
 );
 
+CREATE TABLE IF NOT EXISTS \`completed_workouts\` (
+  \`date\` TEXT PRIMARY KEY NOT NULL,
+  \`workout_id\` INTEGER,
+  \`status\` TEXT NOT NULL,
+  FOREIGN KEY(\`workout_id\`) REFERENCES \`workouts\`(\`id\`)
+);
+
+CREATE TABLE IF NOT EXISTS \`user_progress\` (
+  \`key\` TEXT PRIMARY KEY NOT NULL,
+  \`value\` INTEGER NOT NULL
+);
+
 CREATE UNIQUE INDEX \`exercises_name_unique\` ON \`exercises\` (\`name\`);
 
 CREATE UNIQUE INDEX \`workouts_to_exercises_exercise_id_workout_id_unique\` ON \`workouts_to_exercises\` (\`exercise_id\`,\`workout_id\`);
+
+INSERT OR IGNORE INTO \`user_progress\` (\`key\`, \`value\`) VALUES ('last_completed_order', 0);
 `;
