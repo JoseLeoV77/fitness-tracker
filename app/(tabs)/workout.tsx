@@ -34,15 +34,15 @@ const Workout = () => {
         try{
           const fetchedWorkouts = await db.getAllAsync<WorkoutProps>('SELECT * from workouts')
           setWorkouts(fetchedWorkouts)
-          console.log(fetchedWorkouts)
+
           const fetchedRoutine = await db.getAllAsync<{ 'order': number, workout_id: number }>('SELECT "order", workout_id FROM routines_to_workouts WHERE routine_id IS NULL');
           
           const newRoutine: Record<string, string | null> = { Mon: null, Tue: null, Wed: null, Thu: null, Fri: null, Sat: null, Sun: null };
-            fetchedRoutine.forEach(row => {
+          fetchedRoutine.forEach(row => {
               const day = daysOfWeek[row.order - 1];
               newRoutine[day] = row.workout_id.toString();
-            });
-            setRoutine(newRoutine);
+          });
+          setRoutine(newRoutine);
         } catch (e) {
           console.log(e)
         }
@@ -79,7 +79,7 @@ const Workout = () => {
       setRoutine(prev => ({ ...prev, [selectedDay]: workoutId }));
       if(order > 0){
         try{
-          await db.runAsync('INSERT OR REPLACE INTO routines_to_workouts (order, workout_id) VALUES (?, ?)', [order, workoutId])
+          await db.runAsync('INSERT OR REPLACE INTO routines_to_workouts ("order", workout_id) VALUES (?, ?)', [order, workoutId])
           } catch (e){
             console.log(e)
           }
@@ -118,10 +118,11 @@ const Workout = () => {
       <View className='flex flex-row gap-2 h-40 w-full items-center justify-center bg-darkblue rounded-xl'>
         {daysOfWeek.map(day => (
         <View key={day} className='flex gap-2'>
-          {}
+          {routine[day] &&
           <Pressable className='bg-white h-16 border-2 border-orange-500 p-2 text-center w-20 justify-center rounded' onPress={() => handleRemoveFromRoutine(daysOfWeek.indexOf(day) + 1 )}>
             <Text className='text-center'>Remove</Text>
           </Pressable>
+          }
           <RoutineSelector
               day={day}
               workoutName={getWorkoutName(parseInt(routine[day]!))} 
