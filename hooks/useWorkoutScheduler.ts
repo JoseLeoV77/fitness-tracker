@@ -21,40 +21,56 @@ export const useWorkoutScheduler = () => {
       fetchProgress()
     }, 
     [db]))
-  const handleWorkoutDone = () => {
-    if (!isDaySelected) {
-      console.log("no date selected")
+  
+    const handleWorkoutDone = async (date: string | null, workoutId: number | undefined) => {
+        if (!date || !workoutId) {
+      console.log("No date or workout selected");
       return;
     }
+    
+    try {
+      await db.runAsync(
+        'INSERT OR REPLACE INTO completed_workouts (date, workout_id, status) VALUES (?, ?, ?)',
+        [date, workoutId, 'done']
+      );
 
-    const newMarkedDates = { ...markedDatesState };
-    if (newMarkedDates[isDaySelected]) {
-      delete newMarkedDates[isDaySelected];
-    } else {
-      newMarkedDates[isDaySelected] = {
-        selected: true,
-        selectedColor: "green",
-      };
+      const workoutOrderResult = await db.getFirstAsync<{ 'order': number }>(
+        'SELECT "order" FROM routines_to_workouts WHERE workout_id = ?',
+        [workoutId]
+      );
+      if (workoutOrderResult) {
+        await db.runAsync(
+          'INSERT OR REPLACE INTO user_progress ("key", "value") VALUES (?, ?)',
+          ['last_completed_order', workoutOrderResult.order]
+        );
+      }
+      
+      setMarkedDatesState(prev => ({
+        ...prev,
+        [date]: { selected: true, selectedColor: 'green' }
+      }));
+    } catch (e) {
+      console.error("Failed to mark workout as done:", e);
     }
-    setMarkedDatesState(newMarkedDates);
   }
  
 
-  const handleRestDay = () => {
+  const handleRestDay = async (date: string | null) => {
     if (!isDaySelected) {
       return;
     }
+    try {
+      await db.runAsync(
+        'INSERT OR REPLACE INTO completed_workouts (date, workout_id, status) VALUES (?, ?, ?)',
+        [date, null, 'rest']
+      );
 
-     const newMarkedDates = { ...markedDatesState };
-    if (newMarkedDates[isDaySelected]) {
-      delete newMarkedDates[isDaySelected];
-    } else {
-      newMarkedDates[isDaySelected] = {
-        selected: true,
-        selectedColor: "red",
-      };
+      setMarkedDatesState(prev => ({
+        ...prev, [date!]: { selected: true, selectedColor: 'red' }
+      }));
+    } catch (e) {
+      console.error("Failed to mark rest day:", e);
     }
-    setMarkedDatesState(newMarkedDates);
   }
-  return { isDaySelected, markedDatesState, handleWorkoutDone, handleRestDay, setIsDaySelected }
+  return { isDaySelected, markedDatesState, handleWorkoutDone, handleRestDay, setIsDaySelected, setMarkedDatesState }
 }

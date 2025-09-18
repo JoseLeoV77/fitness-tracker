@@ -2,16 +2,71 @@ import { Button, Text, View } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { WorkoutButton } from "@/components/WorkoutButton";
 import { Calendar } from "react-native-calendars"; //Credit
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useWorkoutScheduler } from "@/hooks/useWorkoutScheduler";
 import notifee from '@notifee/react-native';
+import { useSQLiteContext } from "expo-sqlite";
+import { useFocusEffect } from "expo-router";
+
+interface WorkoutProps {
+  id: number;
+  name: string;
+}
 
 export default function Index() {
-  const [ workout, setWorkout ] = useState(["Push", "Pull", "L", "Rest"]);
+  const db = useSQLiteContext()
+  const [ workout, setWorkout ] = useState<{ name: string; order: number; }[]>([]);
+  const [todayWorkout, setTodayWorkout] = useState<WorkoutProps | null>(null);
   const [ steps, setSteps ] = useState(0)
-  
+  const { isDaySelected, setIsDaySelected, markedDatesState, handleWorkoutDone, handleRestDay, setMarkedDatesState } = useWorkoutScheduler();
 
-  const { setIsDaySelected, markedDatesState, handleWorkoutDone, handleRestDay } = useWorkoutScheduler();
+    useFocusEffect(
+      useCallback(() => {
+        async function fetchData() {
+          try{
+            const completedWorkouts = await db.getAllAsync<{ date: string, status: string }>(
+            'SELECT date, status FROM completed_workouts')
+            console.log(completedWorkouts)
+            const newMarkedDates: Record<string, { selected: boolean; selectedColor: string }> = {}
+            completedWorkouts.forEach(row => {
+              newMarkedDates[row.date] = {
+                selected: true, 
+                selectedColor: row.status === 'done' ? 'green' : 'red' 
+              }
+            })
+            setMarkedDatesState(newMarkedDates)
+            const progressResult = await db.getFirstAsync<{ value: number }>(
+            `SELECT value FROM user_progress WHERE key = 'last_completed_order'`
+          );
+            const lastCompletedOrder = progressResult ? progressResult.value : 0;
+
+            const nextWorkoutResult = await db.getFirstAsync<WorkoutProps & { 'order': number }>(
+            `SELECT W.id, W.name, RTW."order"
+            FROM routines_to_workouts AS RTW
+            JOIN workouts AS W ON RTW.workout_id = W.id
+            WHERE RTW.routine_id IS NULL AND RTW."order" > ?
+            ORDER BY RTW."order" ASC LIMIT 1`,
+            [lastCompletedOrder]
+          );
+
+          if (!nextWorkoutResult) {
+            const firstWorkout = await db.getFirstAsync<WorkoutProps & { 'order': number }>(
+              `SELECT W.id, W.name, RTW."order"
+              FROM routines_to_workouts AS RTW
+              JOIN workouts AS W ON RTW.workout_id = W.id
+              WHERE RTW.routine_id IS NULL
+              ORDER BY RTW."order" ASC LIMIT 1`
+            );
+            setTodayWorkout(firstWorkout);
+          } else {
+            setTodayWorkout(nextWorkoutResult);
+            }
+          } catch (e) {
+            console.log(e)
+          }
+        }
+        fetchData();
+      }, [db])); 
 
   async function onDisplayNotification() {
     await notifee.requestPermission()
@@ -64,9 +119,9 @@ export default function Index() {
           }}
           enableSwipeMonths={true}
         />
-      <Text className="color-slate-50">Todays workout is: {workout[0]}</Text>
-        <WorkoutButton handler={handleWorkoutDone} text={"Workout Done!"} color={"blue"} hover={"blue"} />
-        <WorkoutButton handler={handleRestDay} text={"Rest"} color={"red"} hover={"red"}/>
+      <Text className="color-slate-50">Todays workout is: {todayWorkout?.name || 'Loading...'}</Text>
+        <WorkoutButton handler={() => handleWorkoutDone(isDaySelected,todayWorkout?.id)} text={"Workout Done!"} color={"blue"} hover={"blue"} />
+        <WorkoutButton handler={() => handleRestDay(isDaySelected)} text={"Rest"} color={"red"} hover={"red"}/>
         <Button title="Display Notification" onPress={() => onDisplayNotification()}/>
         <Text className="color-slate-50">
           Steps Test

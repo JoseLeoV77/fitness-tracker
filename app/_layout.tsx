@@ -6,7 +6,7 @@ import './global.css'
 
 import { schema } from '../db/schema.js';
 
-export const DATABASE_NAME = 'fitness_v4'
+export const DATABASE_NAME = 'fitness_v5'
 
 async function initDb(db: any) {
   try {
