@@ -40,16 +40,11 @@ const WorkoutDetails = () => {
     } 
   }
 
-  const handleViewProgress = async () => {
-    try{
-        const WorkoutLogTest = await db.getAllAsync(`SELECT * FROM workout_logs WHERE workout_id = (?)`, [workoutId])
-        setWorkoutLog(WorkoutLogTest)
-      } catch(err){
-        console.log(err)
-      }
-    }
-    console.log('og', workoutLog)
-    return (
+  const handleViewProgress = async (wId:number) => {
+    router.push(`/screens/WorkoutProgress?id=${wId}`)
+  }
+
+  return (
     <View className='bg-primaryblue flex-1'>
       <Text>WorkoutDetails</Text>
       <View>
@@ -66,11 +61,12 @@ const WorkoutDetails = () => {
       <Pressable onPress={router.back} className='w-14 h-14 bg-red-50'>
         <Text>Go back</Text>
       </Pressable>
-      <Pressable onPress={handleViewProgress} 
-      className='flex flex-col w-14 h-14 bg-red-50'>
+      <Pressable 
+        onPress={() => handleViewProgress(workoutId)} 
+        className='flex flex-col w-14 h-14 bg-red-50'>
         <Text>
-            <Octicons name='history' />
-            View Progress
+          <Octicons name='history' />
+          View Progress
         </Text>
       </Pressable>
     </View>

@@ -54,6 +54,9 @@ export const useWorkoutScheduler = () => {
     }
   }
  
+  const handleSelectDay = (date: string) => {
+    setIsDaySelected(date);
+  };
 
   const handleRestDay = async (date: string | null) => {
     if (!isDaySelected) {
@@ -72,5 +75,5 @@ export const useWorkoutScheduler = () => {
       console.error("Failed to mark rest day:", e);
     }
   }
-  return { isDaySelected, markedDatesState, handleWorkoutDone, handleRestDay, setIsDaySelected, setMarkedDatesState }
+  return { isDaySelected, markedDatesState, handleWorkoutDone, handleSelectDay, handleRestDay, setIsDaySelected, setMarkedDatesState }
 }

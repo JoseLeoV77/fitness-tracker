@@ -34,26 +34,40 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen
           name="(tabs)"
-          options={{headerShown: false}}
+          options={{
+            headerShown: false
+          }}
         />
         <Stack.Screen 
-        name="screens/CreateWorkout" 
-        options={{ 
-          presentation: 'modal',
-          title: 'Create Workout',
-          headerShown:false }} />
+          name="screens/CreateWorkout" 
+          options={{ 
+            presentation: 'modal',
+            title: 'Create Workout',
+            headerShown:false 
+          }} 
+        />
         <Stack.Screen 
-        name="screens/CreateRecipe" 
-        options={{ 
-          presentation: 'modal',
-          title: 'Create Recipe',
-          headerShown:false }} />
-          <Stack.Screen 
-        name="screens/WorkoutDetails" 
-        options={{ 
-          presentation: 'modal',
-          title: 'WorkoutDetails',
-          headerShown:false }} />
+          name="screens/CreateRecipe" 
+          options={{ 
+            presentation: 'modal',
+            title: 'Create Recipe',
+            headerShown:false 
+          }} />
+        <Stack.Screen 
+          name="screens/WorkoutDetails" 
+          options={{ 
+            presentation: 'modal',
+            title: 'WorkoutDetails',
+            headerShown:false 
+          }} />
+        <Stack.Screen 
+          name="screens/WorkoutProgress"
+          options={{
+            presentation: 'modal',
+            title: 'WorkoutProgress',
+            headerShown: false
+          }}
+        /> 
       </Stack>
     </SQLiteProvider>
   )

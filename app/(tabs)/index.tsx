@@ -18,56 +18,56 @@ export default function Index() {
   const [ workout, setWorkout ] = useState<{ name: string; order: number; }[]>([]);
   const [todayWorkout, setTodayWorkout] = useState<WorkoutProps | null>(null);
   const [ steps, setSteps ] = useState(0)
-  const { isDaySelected, setIsDaySelected, markedDatesState, handleWorkoutDone, handleRestDay, setMarkedDatesState } = useWorkoutScheduler();
+  const { isDaySelected, setIsDaySelected, markedDatesState, handleWorkoutDone, handleSelectDay, handleRestDay, setMarkedDatesState } = useWorkoutScheduler();
 
-    useFocusEffect(
-      useCallback(() => {
-        async function fetchData() {
-          try{
-            const completedWorkouts = await db.getAllAsync<{ date: string, status: string }>(
-            'SELECT date, status FROM completed_workouts')
-            console.log(completedWorkouts)
-            const newMarkedDates: Record<string, { selected: boolean; selectedColor: string }> = {}
-            completedWorkouts.forEach(row => {
-              newMarkedDates[row.date] = {
-                selected: true, 
-                selectedColor: row.status === 'done' ? 'green' : 'red' 
-              }
-            })
-            setMarkedDatesState(newMarkedDates)
-            const progressResult = await db.getFirstAsync<{ value: number }>(
-            `SELECT value FROM user_progress WHERE key = 'last_completed_order'`
-          );
-            const lastCompletedOrder = progressResult ? progressResult.value : 0;
+  useFocusEffect(
+    useCallback(() => {
+      async function fetchData() {
+        try{
+           const completedWorkouts = await db.getAllAsync<{ date: string, status: string }>(
+          'SELECT date, status FROM completed_workouts')
+          console.log(completedWorkouts)
+          const newMarkedDates: Record<string, { selected: boolean; selectedColor: string }> = {}
+          completedWorkouts.forEach(row => {
+            newMarkedDates[row.date] = {
+               selected: true, 
+              selectedColor: row.status === 'done' ? 'green' : 'red' 
+            }
+          })
+           setMarkedDatesState(newMarkedDates)
+          const progressResult = await db.getFirstAsync<{ value: number }>(
+          `SELECT value FROM user_progress WHERE key = 'last_completed_order'`
+        );
+          const lastCompletedOrder = progressResult ? progressResult.value : 0;
 
-            const nextWorkoutResult = await db.getFirstAsync<WorkoutProps & { 'order': number }>(
+          const nextWorkoutResult = await db.getFirstAsync<WorkoutProps & { 'order': number }>(
+          `SELECT W.id, W.name, RTW."order"
+          FROM routines_to_workouts AS RTW
+          JOIN workouts AS W ON RTW.workout_id = W.id
+          WHERE RTW.routine_id IS NULL AND RTW."order" > ?
+          ORDER BY RTW."order" ASC LIMIT 1`,
+          [lastCompletedOrder]
+        );
+
+        if (!nextWorkoutResult) {
+          const firstWorkout = await db.getFirstAsync<WorkoutProps & { 'order': number }>(
             `SELECT W.id, W.name, RTW."order"
             FROM routines_to_workouts AS RTW
             JOIN workouts AS W ON RTW.workout_id = W.id
-            WHERE RTW.routine_id IS NULL AND RTW."order" > ?
-            ORDER BY RTW."order" ASC LIMIT 1`,
-            [lastCompletedOrder]
+            WHERE RTW.routine_id IS NULL
+            ORDER BY RTW."order" ASC LIMIT 1`
           );
-
-          if (!nextWorkoutResult) {
-            const firstWorkout = await db.getFirstAsync<WorkoutProps & { 'order': number }>(
-              `SELECT W.id, W.name, RTW."order"
-              FROM routines_to_workouts AS RTW
-              JOIN workouts AS W ON RTW.workout_id = W.id
-              WHERE RTW.routine_id IS NULL
-              ORDER BY RTW."order" ASC LIMIT 1`
-            );
-            setTodayWorkout(firstWorkout);
-          } else {
-            setTodayWorkout(nextWorkoutResult);
-            }
-          } catch (e) {
-            console.log(e)
+          setTodayWorkout(firstWorkout);
+        } else {
+          setTodayWorkout(nextWorkoutResult);
           }
+        } catch (e) {
+          console.log(e)
         }
-        fetchData();
-      }, [db])); 
-
+      }
+      fetchData();
+    }, [db])); 
+ 
   async function onDisplayNotification() {
     await notifee.requestPermission()
 

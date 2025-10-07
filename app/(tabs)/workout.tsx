@@ -5,6 +5,7 @@ import { RoutineSelector } from '@/components/RoutineSelector'
 import { WorkoutCard } from '../../components/WorkoutCard'
 import { router, useFocusEffect } from 'expo-router'
 import { useSQLiteContext } from 'expo-sqlite'
+import { TutorialModal } from '@/components/TutorialModal'
 
 interface WorkoutProps {
   id: number;
@@ -25,6 +26,7 @@ const Workout = () => {
   const [ workouts, setWorkouts ] = useState<WorkoutProps[]>([])
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [ deleteWorkout, setDeleteWorkout ] = useState<boolean>(false) 
+  const [modal, setIsModalOpen] = useState<boolean>(false)
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -39,8 +41,8 @@ const Workout = () => {
           
           const newRoutine: Record<string, string | null> = { Mon: null, Tue: null, Wed: null, Thu: null, Fri: null, Sat: null, Sun: null };
           fetchedRoutine.forEach(row => {
-              const day = daysOfWeek[row.order - 1];
-              newRoutine[day] = row.workout_id.toString();
+            const day = daysOfWeek[row.order - 1];
+            newRoutine[day] = row.workout_id.toString();
           });
           setRoutine(newRoutine);
         } catch (e) {
@@ -111,6 +113,15 @@ const Workout = () => {
       console.error("Failed to remove from routine:", err);
     }
   }
+
+  function handleTutorialPress(){
+    setIsModalOpen(true)
+  }
+
+  function handleCloseTutorial(){
+    setIsModalOpen(false)
+  }
+
   console.log('routine: ',routine)
 
   return (
@@ -134,8 +145,13 @@ const Workout = () => {
       </View>
       <FlatList 
         data={workouts} 
-        renderItem={({ item }) => (<WorkoutCard id={item.id} name={item.name} onPress={() => handleWorkoutPress(item.id.toString())}
-        />)}
+        renderItem={({ item }) => (
+          <WorkoutCard 
+            id={item.id} 
+            name={item.name} 
+            onPress={() => handleWorkoutPress(item.id.toString())}
+          />
+        )}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={{
           padding: 12, 
@@ -147,8 +163,8 @@ const Workout = () => {
         ListEmptyComponent={()=> <Text className='color-white'>Create some workouts!</Text>}
         ListFooterComponent={()=>(
           <View className='flex flex-row gap-2 '>
-          <CreateButton href='CreateWorkout'/>
-        </View>
+            <CreateButton href='CreateWorkout'/>
+          </View>
         )}
         />
         <Pressable className='color-slate-950 bg-red-300 w-16 h-16 flex items-center justify-center rounded-lg p-4 absolute top-3/4 left-3/4' onPress={handleWorkoutDelete}>
@@ -156,6 +172,12 @@ const Workout = () => {
             Delete a workout
           </Text>
         </Pressable>
+        <Pressable className='color-slate-950 bg-gray-300 w-12 h-12 flex items-center justify-center rounded-full p-4 absolute top-2/4 left-3/4' onPress={handleTutorialPress}>
+          <Text>
+            ?
+          </Text>
+        </Pressable>
+        <TutorialModal isVisible={modal} onClose={handleCloseTutorial}/>
     </View>
   )
 }
