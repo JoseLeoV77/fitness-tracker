@@ -13,7 +13,7 @@ const _layout = () => {
           width: "100%",
           height: "100%",
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
         },
         tabBarStyle: {
           backgroundColor: colorDarkBlue,
@@ -34,7 +34,7 @@ const _layout = () => {
         title: 'Home', 
         headerShown: false,
         tabBarIcon: ({focused}) => (
-          <TabIcon  focused={focused} title="Home" icon="house-user" vectorIcons="FontAwesome5"/>
+          <TabIcon focused={focused} title="Home" icon="house-user" vectorIcons="FontAwesome5"/>
         )
       }} />
       <Tabs.Screen 

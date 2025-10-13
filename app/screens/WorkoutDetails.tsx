@@ -1,12 +1,14 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useSQLiteContext } from 'expo-sqlite'
-import { Octicons } from '@expo/vector-icons'
+import { Octicons, Ionicons } from '@expo/vector-icons'
+import { GoBackHeaderButton } from '@/components/GoBackHeaderButton'
 
 interface ExerciseDetail {
   name: string;
   reps: number;
+  superset_id?: number
 }
 
 const WorkoutDetails = () => {
@@ -45,30 +47,47 @@ const WorkoutDetails = () => {
   }
 
   return (
-    <View className='bg-primaryblue flex-1'>
-      <Text>WorkoutDetails</Text>
-      <View>
-        {exercises.map((exercises, index) => (
-          <View key={index} className='color-white'>
-            <Text className='color-white'>Exercise: {exercises.name}</Text>
-            <Text className='color-white'>Target Reps: {exercises.reps}</Text>
-          </View>
-        ))}
+    <View className='bg-primaryblue flex-1 gap-8'>
+      <View className='flex-row items-center justify-between p-4 pt-8 bg-gray-800 border-b border-gray-700'>
+        <GoBackHeaderButton />
       </View>
-      <Pressable className='w-14 h-14 bg-red-50' onPress={handleStartWorkout}>
-        <Text>Start Workout! </Text>
-      </Pressable>
-      <Pressable onPress={router.back} className='w-14 h-14 bg-red-50'>
-        <Text>Go back</Text>
-      </Pressable>
-      <Pressable 
-        onPress={() => handleViewProgress(workoutId)} 
-        className='flex flex-col w-14 h-14 bg-red-50'>
-        <Text>
-          <Octicons name='history' />
-          View Progress
-        </Text>
-      </Pressable>
+
+      <View>
+        <Text className='text-gray-100 text-lg font-semibold mb-2 self-center'>Exercises in this workout:</Text>
+        <ScrollView contentContainerClassName='flex gap-4'>
+          {exercises.map((exercise, index) => (
+            <View 
+                key={index} 
+                className='bg-green-600 p-4 rounded-xl shadow-md w-11/12 self-center' 
+                style={{
+                    borderLeftWidth: exercise.superset_id ? 5 : 0,
+                    borderLeftColor: exercise.superset_id! ? '#FFD700' : 'transparent',
+                }}
+              >
+                <Text className='text-white text-xl font-bold mb-1'>{exercise.name}</Text>
+                <Text className='text-black text-base'>Target Reps: {exercise.reps}</Text>
+              </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      <View className='absolute bottom-12 self-center rounded-lg bg-gray-800 border-t border-gray-700 p-4 flex-row justify-around items-center w-11/12'>
+        <Pressable 
+          className='flex-1 py-3 px-4 mr-2 bg-blue-600 rounded-full flex-row items-center justify-center shadow-lg' 
+          onPress={() => handleViewProgress(workoutId)}
+        >
+          <Ionicons name="stats-chart-outline" size={20} color="white" className='mr-2'/>
+          <Text className='text-white text-base font-semibold'>View Progress</Text>
+        </Pressable>
+        
+        <Pressable 
+          className='flex-1 py-3 px-4 ml-2 bg-green-500 rounded-full flex-row items-center justify-center shadow-lg' 
+          onPress={handleStartWorkout}
+        >
+          <Ionicons name="play-circle-outline" size={20} color="white" className='mr-2'/>
+          <Text className='text-white text-base font-bold'>Start Workout!</Text>
+        </Pressable>
+      </View>
     </View>
   )
 }

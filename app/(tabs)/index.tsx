@@ -119,7 +119,7 @@ export default function Index() {
           }}
           enableSwipeMonths={true}
         />
-      <Text className="color-slate-50">Todays workout is: {todayWorkout?.name || 'Loading...'}</Text>
+      <Text className="color-slate-50">Todays workout is: {todayWorkout?.name || 'Rest Day!'}</Text>
         <WorkoutButton handler={() => handleWorkoutDone(isDaySelected,todayWorkout?.id)} text={"Workout Done!"} color={"blue"} hover={"blue"} />
         <WorkoutButton handler={() => handleRestDay(isDaySelected)} text={"Rest"} color={"red"} hover={"red"}/>
         <Button title="Display Notification" onPress={() => onDisplayNotification()}/>

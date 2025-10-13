@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { View, Text, FlatList, Pressable } from 'react-native'
+import { View, Text, FlatList, Pressable, ScrollView } from 'react-native'
 import { CreateButton } from '@/components/CreateButton'
-import { RoutineSelector } from '@/components/RoutineSelector'
+import { DaySelector } from '@/components/DaySelector'
 import { WorkoutCard } from '../../components/WorkoutCard'
 import { router, useFocusEffect } from 'expo-router'
 import { useSQLiteContext } from 'expo-sqlite'
 import { TutorialModal } from '@/components/TutorialModal'
+import { FontAwesome } from '@expo/vector-icons'
+import { TutorialButton } from '@/components/TutorialButton'
 
 interface WorkoutProps {
   id: number;
@@ -45,24 +47,25 @@ const Workout = () => {
             newRoutine[day] = row.workout_id.toString();
           });
           setRoutine(newRoutine);
-        } catch (e) {
-          console.log(e)
+        } catch (err) {
+          console.log("Failed to fetch data: ", err)
         }
       }
       fetchData();
     }, [db])); 
 
   function getWorkoutName (id: number | null) {
-    if (!id) {
-      return undefined;
-    }
+    if (!id) return undefined
+
     const workout = workouts.find(workout => workout.id === id);
     return workout ? workout.name : undefined;
   };
 
+  //suggestion by ai
   function handleDayPress(day: string){
     setSelectedDay(day);
   };
+  //suggestion by ai
 
   async function deleteFromWorkout (workoutId:string){
     try{
@@ -101,7 +104,6 @@ const Workout = () => {
 
   async function handleRemoveFromRoutine(order: number){
       try {
-        console.log('hR', order)
       await db.runAsync(
         'DELETE FROM routines_to_workouts WHERE "order" = ? AND routine_id IS NULL',
         [order]
@@ -125,8 +127,14 @@ const Workout = () => {
   console.log('routine: ',routine)
 
   return (
-    <View className='flex-1 bg-primaryblue items-center relative'>
-      <View className='flex flex-row gap-2 h-40 w-full items-center justify-center bg-darkblue rounded-xl'>
+    <View className='flex-1 bg-primaryblue items-center'>
+      
+      <View className='flex flex-row justify-between items-center p-4 pt-3 relative'>
+        <Text className='text-2xl font-bold color-white'>My Plan</Text>
+      </View>
+        <TutorialButton handleTutorialPress={handleTutorialPress}/>
+
+      <View className='flex flex-wrap flex-row px-3 py-2 bg-onyx w-11/12 p-2 justify-center rounded-lg border-2 border-blue-300'>
         {daysOfWeek.map(day => (
         <View key={day} className='flex gap-2'>
           {routine[day] &&
@@ -134,7 +142,7 @@ const Workout = () => {
             <Text className='text-center'>Remove</Text>
           </Pressable>
           }
-          <RoutineSelector
+          <DaySelector
               day={day}
               workoutName={getWorkoutName(parseInt(routine[day]!))} 
               onPress={() => handleDayPress(day)}
@@ -143,6 +151,7 @@ const Workout = () => {
         </View>
         ))}
       </View>
+
       <FlatList 
         data={workouts} 
         renderItem={({ item }) => (
@@ -162,21 +171,19 @@ const Workout = () => {
         }}
         ListEmptyComponent={()=> <Text className='color-white'>Create some workouts!</Text>}
         ListFooterComponent={()=>(
-          <View className='flex flex-row gap-2 '>
+          <View className='flex flex-col w-28 h-28 gap-2 items-center justify-center rounded-3xl p-4 border-2 bg-slate-100 border-dotted border-black'>
             <CreateButton href='CreateWorkout'/>
+            <Text className='text-center'>Add a Workout!</Text>
           </View>
         )}
         />
-        <Pressable className='color-slate-950 bg-red-300 w-16 h-16 flex items-center justify-center rounded-lg p-4 absolute top-3/4 left-3/4' onPress={handleWorkoutDelete}>
+       
+        <Pressable className='color-slate-950 bg-red-300 w-16 h-16 flex items-center justify-center rounded-3xl p-4 absolute top-3/4 left-3/4' onPress={handleWorkoutDelete}>
           <Text>
             Delete a workout
           </Text>
         </Pressable>
-        <Pressable className='color-slate-950 bg-gray-300 w-12 h-12 flex items-center justify-center rounded-full p-4 absolute top-2/4 left-3/4' onPress={handleTutorialPress}>
-          <Text>
-            ?
-          </Text>
-        </Pressable>
+        
         <TutorialModal isVisible={modal} onClose={handleCloseTutorial}/>
     </View>
   )

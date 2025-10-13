@@ -7,6 +7,8 @@ export interface ExerciseTemplate {
   exerciseName: string;
   targetSets: string;
   targetReps: string;
+  additionalSets: string;
+  additionalReps: string
   isSuperset: boolean;
   supersetExerciseName?: string;
 }
@@ -41,6 +43,7 @@ export const useCreateWorkout = () => {
           const order = index + 1;
 
           let mainExerciseResult = await db.getFirstAsync<{ id: number }>('SELECT id FROM exercises WHERE name = ?', [exercise.exerciseName.trim()]);
+          
           if (!mainExerciseResult) {
             const res = await db.runAsync('INSERT INTO exercises (name) VALUES (?)', [exercise.exerciseName.trim()]);
             mainExerciseResult = { id: res.lastInsertRowId };
@@ -63,7 +66,7 @@ export const useCreateWorkout = () => {
 
             await db.runAsync(
               'INSERT INTO workouts_to_exercises (workout_id, exercise_id, `order`, superset_id, reps) VALUES (?, ?, ?, ?, ?)',
-              [newWorkoutId, supersetExerciseId, order, supersetId, exercise.targetReps]
+              [newWorkoutId, supersetExerciseId, order, supersetId, exercise.additionalReps]
             );
           } else {
             await db.runAsync(

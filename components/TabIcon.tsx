@@ -2,10 +2,12 @@ import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
 export const TabIcon = ({focused, title, icon, vectorIcons}: any) => {
-  
+    const NARROW_SCREEN_FIX_CLASS = "sm-max:translate-y-[6.5px]"
+
+
   if(focused){
     return (
-      <View style={{backgroundColor: "orange"}} className="flex flex-row w-full min-w-[112px] min-h-16 justify-center gap-2 items-center rounded-full">
+      <View className={`bg-bgOrange flex flex-row h-full w-full min-w-[112px] min-h-14 justify-center items-center gap-2 rounded-full ${NARROW_SCREEN_FIX_CLASS}`}>
         {
           vectorIcons === "MaterialIcons" 
           ? <MaterialIcons name={icon} size={24}/> 
@@ -17,8 +19,7 @@ export const TabIcon = ({focused, title, icon, vectorIcons}: any) => {
   }
 
   return(
-    <View className="flex flex-row justify-center items-center
-    gap-2">
+    <View className={`flex flex-row justify-center items-center h-full gap-2 ${NARROW_SCREEN_FIX_CLASS}`} >
         {
           vectorIcons === "MaterialIcons" 
           ? <MaterialIcons name={icon} size={24} className="color-slate-50"/> 

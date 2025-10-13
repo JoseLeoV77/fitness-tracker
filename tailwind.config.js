@@ -6,7 +6,23 @@ module.exports = {
     extend: {
       colors: {
         darkblue: '#030014',
-        primaryblue: '#030040'
+        primaryblue: '#030040',
+        placeholder: "#6b7280",
+        deepblue: "#4C95E6",
+        background: '#121212',
+        surface: '#1E1E1E',
+        onyx: "#353935",
+        primary: '#3A82F7',
+        primaryVariant: '#285cb5',
+        accent: '#03DAC6',
+        error: '#CF6679',
+        textPrimary: '#FFFFFF',
+        textSecondary: '#B3B3B3',
+        border: '#2c2c2c',
+        bgOrange: '#FFA500',
+      },
+      screens: {
+        'sm-max': { 'max': '770px' }
       }
     },
   },

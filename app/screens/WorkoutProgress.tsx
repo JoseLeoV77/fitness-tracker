@@ -2,6 +2,7 @@ import { View, Text, Pressable } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { useSQLiteContext } from 'expo-sqlite'
+import { GoBackHeaderButton } from '@/components/GoBackHeaderButton'
 
 const WorkoutProgress = () => {
   
@@ -25,11 +26,9 @@ const WorkoutProgress = () => {
 
   console.log(workoutLogs)
   return (
-    <View>
+    <View className='flex-1 bg-gray-900'>
       <Text>WorkoutProgress</Text>
-      <Pressable onPress={router.back} className='w-14 h-14 bg-red-50'>
-        <Text>Go back</Text>
-      </Pressable>
+      <GoBackHeaderButton />
     </View>
   )
 }
