@@ -61,11 +61,9 @@ const Workout = () => {
     return workout ? workout.name : undefined;
   };
 
-  //suggestion by ai
   function handleDayPress(day: string){
     setSelectedDay(day);
   };
-  //suggestion by ai
 
   async function deleteFromWorkout (workoutId:string){
     try{
