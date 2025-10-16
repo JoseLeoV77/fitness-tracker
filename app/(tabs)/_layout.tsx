@@ -3,8 +3,8 @@ import { Tabs } from 'expo-router'
 import { TabIcon } from '@/components/TabIcon'
 
 const _layout = () => {
-  const colorDarkBlue = "#030014";
-
+  const colorDarkBlue = "#144a43";
+  const tabBackgroundOnyx = "#262829"
   return (
     <Tabs 
       screenOptions={{
@@ -16,8 +16,10 @@ const _layout = () => {
           alignItems: 'center',
         },
         tabBarStyle: {
-          backgroundColor: colorDarkBlue,
+          backgroundColor: tabBackgroundOnyx,
           borderRadius: 50,
+          borderTopColor: "gray",
+          borderTopWidth: 1,
           marginHorizontal: 20,
           marginBottom: 36,
           height: 52,

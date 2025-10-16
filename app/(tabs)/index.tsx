@@ -1,5 +1,4 @@
-import { Button, Text, View } from "react-native";
-import { LinearGradient } from 'expo-linear-gradient';
+import { Pressable, Text, View } from "react-native";
 import { WorkoutButton } from "@/components/WorkoutButton";
 import { Calendar } from "react-native-calendars"; //Credit
 import { useState, useCallback } from "react";
@@ -7,6 +6,7 @@ import { useWorkoutScheduler } from "@/hooks/useWorkoutScheduler";
 import notifee from '@notifee/react-native';
 import { useSQLiteContext } from "expo-sqlite";
 import { useFocusEffect } from "expo-router";
+import { CustomDay } from "@/components/CustomDay";
 
 interface WorkoutProps {
   id: number;
@@ -19,6 +19,8 @@ export default function Index() {
   const [todayWorkout, setTodayWorkout] = useState<WorkoutProps | null>(null);
   const [ steps, setSteps ] = useState(0)
   const { isDaySelected, setIsDaySelected, markedDatesState, handleWorkoutDone, handleSelectDay, handleRestDay, setMarkedDatesState } = useWorkoutScheduler();
+
+  const background = "#2b2b2b"
 
   useFocusEffect(
     useCallback(() => {
@@ -88,44 +90,54 @@ export default function Index() {
   }
   
   return (
-    <View className="flex justify-center items-center flex-1 gap-2">
-      <LinearGradient
-        colors={["#030014", "#030040"]}
-        style={{position: "absolute", left: 0, top: 0, bottom: 0, right: 0,
-          height: "100%"
-        }}
-        start={{x:0, y:1}}
-        end={{x:0, y:1}}
-      ></LinearGradient>
+    <View className="flex justify-center items-center flex-1 gap-2 bg-background">
+
       <Calendar 
-          headerStyle={{
-            backgroundColor: "green",
-            borderRadius: 10
-          }}
-          style={{
-            backgroundColor: "green",
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-            paddingBottom: 4,
-            width: 400,
-          }}
-          showSixWeeks={true}
-          onDayPress={day => {
-            setIsDaySelected(day.dateString)
-          }}
-          markedDates={markedDatesState}
-          theme={{
-            monthTextColor: "white"
-          }}
-          enableSwipeMonths={true}
-        />
+        dayComponent={({ date, state, marking, onPress}) => (
+          <CustomDay date={date} state={state} />
+        )}
+        headerStyle={{
+          backgroundColor: `${background}`,
+          borderRadius: 10
+        }}
+        style={{
+          backgroundColor: `${background}`,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+          paddingBottom: 4,
+          width: 400,
+        }}
+        showSixWeeks={true}
+        onDayPress={day => {
+          setIsDaySelected(day.dateString)
+        }}
+        markedDates={markedDatesState}
+        theme={{
+          monthTextColor: "white",
+          calendarBackground: `${background}`,
+
+        }}
+        enableSwipeMonths={true}
+      />
       <Text className="color-slate-50">Todays workout is: {todayWorkout?.name || 'Rest Day!'}</Text>
-        <WorkoutButton handler={() => handleWorkoutDone(isDaySelected,todayWorkout?.id)} text={"Workout Done!"} color={"blue"} hover={"blue"} />
-        <WorkoutButton handler={() => handleRestDay(isDaySelected)} text={"Rest"} color={"red"} hover={"red"}/>
-        <Button title="Display Notification" onPress={() => onDisplayNotification()}/>
-        <Text className="color-slate-50">
-          Steps Test
-        </Text>
+
+      <View className="bg-onyx w-full h-76 flex">
+
+        <View className="flex flex-row justify-center gap-2">
+          <WorkoutButton handler={() => handleWorkoutDone(isDaySelected,todayWorkout?.id)} text={"Workout Done!"} color={"blue"} hover={"blue"} />
+          <WorkoutButton handler={() => handleRestDay(isDaySelected)} text={"Rest"} color={"red"} hover={"red"}/>
+        </View>
+        
+        <View className="flex flex-row justify-center gap-2">
+          <Pressable onPress={() => onDisplayNotification()}>
+            <Text className="color-white">Notification Test</Text>
+          </Pressable>
+          <Text className="color-slate-50">
+            Steps Test
+          </Text>
+        </View>
+        
+      </View>
     </View>
   );
 }

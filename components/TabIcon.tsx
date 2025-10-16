@@ -3,17 +3,17 @@ import { Text, View } from "react-native";
 
 export const TabIcon = ({focused, title, icon, vectorIcons}: any) => {
     const NARROW_SCREEN_FIX_CLASS = "sm-max:translate-y-[6.5px]"
-
+    const iconBlue = "#51a4ed"
 
   if(focused){
     return (
-      <View className={`bg-bgOrange flex flex-row h-full w-full min-w-[112px] min-h-14 justify-center items-center gap-2 rounded-full ${NARROW_SCREEN_FIX_CLASS}`}>
+      <View className={`flex flex-row h-full w-full min-w-[112px] min-h-14 justify-center items-center gap-2 rounded-full ${NARROW_SCREEN_FIX_CLASS}`}>
         {
           vectorIcons === "MaterialIcons" 
-          ? <MaterialIcons name={icon} size={24}/> 
-          : <FontAwesome5 name={icon} size={24}/>
+          ? <MaterialIcons name={icon} size={24} color={iconBlue}/> 
+          : <FontAwesome5 name={icon} size={24} color={iconBlue}/>
         }
-        <Text className="color-slate-950">{title}</Text>
+        <Text className="color-primary">{title}</Text>
       </View>
     )
   }

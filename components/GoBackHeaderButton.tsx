@@ -6,7 +6,7 @@ import { router } from 'expo-router'
 export const GoBackHeaderButton = () => {
   return (
     <Pressable onPress={router.back} className='p-2'>
-      <Ionicons name="arrow-back" size={28} color="#007AFF" /> 
+      <Ionicons name="arrow-back" size={28} color="white" /> 
     </Pressable>
   )
 }

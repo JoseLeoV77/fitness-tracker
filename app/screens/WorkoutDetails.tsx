@@ -47,8 +47,8 @@ const WorkoutDetails = () => {
   }
 
   return (
-    <View className='bg-primaryblue flex-1 gap-8'>
-      <View className='flex-row items-center justify-between p-4 pt-8 bg-gray-800 border-b border-gray-700'>
+    <View className='bg-background flex-1 gap-8'>
+      <View className='flex-row items-center justify-between p-4 pt-8 bg-background border-b-4 border-gray-600'>
         <GoBackHeaderButton />
       </View>
 
@@ -71,7 +71,7 @@ const WorkoutDetails = () => {
         </ScrollView>
       </View>
 
-      <View className='absolute bottom-12 self-center rounded-lg bg-gray-800 border-t border-gray-700 p-4 flex-row justify-around items-center w-11/12'>
+      <View className='absolute bottom-12 self-center rounded-full bg-onyx border-t border-blue-100 p-4 flex-row justify-around items-center w-11/12'>
         <Pressable 
           className='flex-1 py-3 px-4 mr-2 bg-blue-600 rounded-full flex-row items-center justify-center shadow-lg' 
           onPress={() => handleViewProgress(workoutId)}

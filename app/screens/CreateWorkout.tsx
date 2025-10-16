@@ -15,10 +15,10 @@ const CreateWorkout = () => {
     handleSaveWorkout,
   } = useCreateWorkout();
 
-  const placeholderColor = "#6b7280"
+  const placeholderText = "#6b7280"
 
   return (
-    <ScrollView className="bg-[#030040] flex-1 p-5" contentContainerStyle={{ paddingBottom: 50 }}>
+    <ScrollView className="bg-background flex-1 p-5" contentContainerStyle={{ paddingBottom: 50 }}>
       <View className='flex gap-5'>
 
         <Text className="text-white text-3xl font-bold text-center">Create Workout</Text>
@@ -27,17 +27,17 @@ const CreateWorkout = () => {
             <Text className="text-white text-base font-semibold px-1">WORKOUT NAME</Text>
             <TextInput
               placeholder='e.g., Push Day A'
-              placeholderTextColor={placeholderColor}
+              placeholderTextColor={placeholderText}
               value={workoutName}
               onChangeText={setWorkoutName}
-              className='bg-gray-800 border border-gray-700 rounded-lg p-4 text-white text-lg'
+              className='bg-gray-800 border border-blue-300 rounded-lg p-4 text-white text-lg'
             />
         </View>
 
         <View className="gap-2">
           <Text className="text-white text-base font-semibold px-1">Exercises</Text>
           {exercises.length === 0 && 
-          <View className="bg-gray-800 rounded-lg p-6 items-center justify-center">
+          <View className="bg-gray-800 rounded-lg p-6 items-center justify-center border border-blue-300">
             <Text className="text-gray-300">Add an exercise to get started!</Text>
           </View>
           }
@@ -55,7 +55,7 @@ const CreateWorkout = () => {
           ))}
         </View>
 
-        <View className="bg-gray-800 rounded-xl p-4 mt-2">
+        <View className="bg-gray-800 rounded-xl p-4 mt-2 border border-blue-300">
           <Text className="text-white text-xl font-bold mb-4">Add New Exercise</Text>
           <AddExerciseForm onAddExercise={addExercise} />
         </View>

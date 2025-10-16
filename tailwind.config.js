@@ -9,7 +9,7 @@ module.exports = {
         primaryblue: '#030040',
         placeholder: "#6b7280",
         deepblue: "#4C95E6",
-        background: '#121212',
+        background: '#2b2b2b',
         surface: '#1E1E1E',
         onyx: "#353935",
         primary: '#3A82F7',
@@ -19,7 +19,6 @@ module.exports = {
         textPrimary: '#FFFFFF',
         textSecondary: '#B3B3B3',
         border: '#2c2c2c',
-        bgOrange: '#FFA500',
       },
       screens: {
         'sm-max': { 'max': '770px' }

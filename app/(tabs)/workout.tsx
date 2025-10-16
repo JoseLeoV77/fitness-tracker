@@ -29,6 +29,7 @@ const Workout = () => {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [ deleteWorkout, setDeleteWorkout ] = useState<boolean>(false) 
   const [modal, setIsModalOpen] = useState<boolean>(false)
+  const [editModal, setIsEditModal ] = useState<boolean>(false)
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -96,6 +97,10 @@ const Workout = () => {
     }
   };
 
+  async function handleEditWorkout(){
+    setIsEditModal(!editModal)
+  }
+
   function handleWorkoutDelete (){
     setDeleteWorkout(!deleteWorkout)  
   }
@@ -125,9 +130,9 @@ const Workout = () => {
   console.log('routine: ',routine)
 
   return (
-    <View className='flex-1 bg-primaryblue items-center'>
+    <View className='flex-1 bg-background items-center'>
       
-      <View className='flex flex-row justify-between items-center p-4 pt-3 relative'>
+      <View className='flex flex-row self-start mt-2 p-4 pt-3 relative'>
         <Text className='text-2xl font-bold color-white'>My Plan</Text>
       </View>
         <TutorialButton handleTutorialPress={handleTutorialPress}/>
@@ -136,7 +141,7 @@ const Workout = () => {
         {daysOfWeek.map(day => (
         <View key={day} className='flex gap-2'>
           {routine[day] &&
-          <Pressable className='bg-white h-16 border-2 border-orange-500 p-2 text-center w-20 justify-center rounded' onPress={() => handleRemoveFromRoutine(daysOfWeek.indexOf(day) + 1 )}>
+          <Pressable className='bg-white h-16 border-2 border-orange-500 p-2 text-center w-18 justify-center rounded' onPress={() => handleRemoveFromRoutine(daysOfWeek.indexOf(day) + 1 )}>
             <Text className='text-center'>Remove</Text>
           </Pressable>
           }
@@ -157,6 +162,7 @@ const Workout = () => {
             id={item.id} 
             name={item.name} 
             onPress={() => handleWorkoutPress(item.id.toString())}
+            editPress={handleEditWorkout}
           />
         )}
         keyExtractor={item => item.id.toString()}
@@ -165,11 +171,11 @@ const Workout = () => {
           gap: 32, 
           flexDirection: 'row',
           flexWrap: 'wrap',
-          backgroundColor: '#030040'
+          backgroundColor: 'background'
         }}
         ListEmptyComponent={()=> <Text className='color-white'>Create some workouts!</Text>}
         ListFooterComponent={()=>(
-          <View className='flex flex-col w-28 h-28 gap-2 items-center justify-center rounded-3xl p-4 border-2 bg-slate-100 border-dotted border-black'>
+          <View className='flex flex-col w-28 h-28 gap-2 items-center justify-center rounded-3xl p-4 bg-slate-100 border-2 border-blue-800'>
             <CreateButton href='CreateWorkout'/>
             <Text className='text-center'>Add a Workout!</Text>
           </View>
