@@ -10,7 +10,7 @@ export const WorkoutButton = ({text, handler, color, hover}: WorkoutButtonProps)
 
   return(
     <View>
-      <Pressable className={`bg-${color}-600 w-28 rounded-xl p-2 hover:bg-${hover}-950`} onPress={handler}>
+      <Pressable className={`bg-${color}-600 w-28 rounded-xl h-12   flex justify-center p-2 hover:bg-${hover}-950`} onPress={handler}>
           <Text className="color-slate-50 text-center">{text}</Text>
         </Pressable>
     </View>

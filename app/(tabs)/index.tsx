@@ -98,7 +98,7 @@ export default function Index() {
         )}
         headerStyle={{
           backgroundColor: `${background}`,
-          borderRadius: 10
+          borderRadius: 10,
         }}
         style={{
           backgroundColor: `${background}`,
@@ -106,6 +106,7 @@ export default function Index() {
           borderTopRightRadius: 10,
           paddingBottom: 4,
           width: 400,
+          height: 450
         }}
         showSixWeeks={true}
         onDayPress={day => {
@@ -113,16 +114,18 @@ export default function Index() {
         }}
         markedDates={markedDatesState}
         theme={{
+          textMonthFontSize: 22,
           monthTextColor: "white",
           calendarBackground: `${background}`,
 
         }}
         enableSwipeMonths={true}
+        hideExtraDays={true}
       />
-      <Text className="color-slate-50">Todays workout is: {todayWorkout?.name || 'Rest Day!'}</Text>
 
-      <View className="bg-onyx w-full h-76 flex">
+      <View className='bg-onyx w-8/12 rounded-lg h-64 flex gap-6 justify-center items-center sm-max:mt-8 sm-max:w-10/12'>
 
+        <Text className="color-slate-50 text-lg font-semibold">Todays workout is: {todayWorkout?.name || 'Rest Day!'}</Text>
         <View className="flex flex-row justify-center gap-2">
           <WorkoutButton handler={() => handleWorkoutDone(isDaySelected,todayWorkout?.id)} text={"Workout Done!"} color={"blue"} hover={"blue"} />
           <WorkoutButton handler={() => handleRestDay(isDaySelected)} text={"Rest"} color={"red"} hover={"red"}/>
@@ -132,7 +135,7 @@ export default function Index() {
           <Pressable onPress={() => onDisplayNotification()}>
             <Text className="color-white">Notification Test</Text>
           </Pressable>
-          <Text className="color-slate-50">
+          <Text className="color-slate-50 border-green-50 border rounded-xl p-3">
             Steps Test
           </Text>
         </View>

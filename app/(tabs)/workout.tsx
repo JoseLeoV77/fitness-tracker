@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { View, Text, FlatList, Pressable, ScrollView } from 'react-native'
+import React, { useState, useCallback } from 'react'
+import { View, Text, FlatList, Pressable } from 'react-native'
 import { CreateButton } from '@/components/CreateButton'
 import { DaySelector } from '@/components/DaySelector'
 import { WorkoutCard } from '../../components/WorkoutCard'
 import { router, useFocusEffect } from 'expo-router'
 import { useSQLiteContext } from 'expo-sqlite'
 import { TutorialModal } from '@/components/TutorialModal'
-import { FontAwesome } from '@expo/vector-icons'
 import { TutorialButton } from '@/components/TutorialButton'
+import { EditModal } from '@/components/EditModal'
 
 interface WorkoutProps {
   id: number;
@@ -30,9 +30,11 @@ const Workout = () => {
   const [ deleteWorkout, setDeleteWorkout ] = useState<boolean>(false) 
   const [modal, setIsModalOpen] = useState<boolean>(false)
   const [editModal, setIsEditModal ] = useState<boolean>(false)
+  const [longPressId, setLongPressId ] = useState<string>("")
 
-  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
+  const daysOfWeek = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+  
+  
   useFocusEffect(
     useCallback(() => {
       async function fetchData() {
@@ -77,7 +79,6 @@ const Workout = () => {
   }
 
   async function handleWorkoutPress (workoutId: string){
-
     if (selectedDay) {
       const order = daysOfWeek.indexOf(selectedDay) + 1
       setRoutine(prev => ({ ...prev, [selectedDay]: workoutId }));
@@ -90,19 +91,14 @@ const Workout = () => {
         }
       setSelectedDay(null);
       setDeleteWorkout(false)
-    } else if (deleteWorkout) {
-      deleteFromWorkout(workoutId)
     } else {
         router.push(`/screens/WorkoutDetails?id=${workoutId}`);
     }
   };
 
-  async function handleEditWorkout(){
-    setIsEditModal(!editModal)
-  }
-
-  function handleWorkoutDelete (){
-    setDeleteWorkout(!deleteWorkout)  
+  function handleLongPress (workoutId: string){
+    setLongPressId(workoutId)
+    setIsEditModal(true) 
   }
 
   async function handleRemoveFromRoutine(order: number){
@@ -127,8 +123,9 @@ const Workout = () => {
     setIsModalOpen(false)
   }
 
-  console.log('routine: ',routine)
-
+  function closeEditModal(){
+    setIsEditModal(false)
+  }
   return (
     <View className='flex-1 bg-background items-center'>
       
@@ -162,7 +159,7 @@ const Workout = () => {
             id={item.id} 
             name={item.name} 
             onPress={() => handleWorkoutPress(item.id.toString())}
-            editPress={handleEditWorkout}
+            onLongPress={() => handleLongPress(item.id.toString())}
           />
         )}
         keyExtractor={item => item.id.toString()}
@@ -181,14 +178,8 @@ const Workout = () => {
           </View>
         )}
         />
-       
-        <Pressable className='color-slate-950 bg-red-300 w-16 h-16 flex items-center justify-center rounded-3xl p-4 absolute top-3/4 left-3/4' onPress={handleWorkoutDelete}>
-          <Text>
-            Delete a workout
-          </Text>
-        </Pressable>
-        
-        <TutorialModal isVisible={modal} onClose={handleCloseTutorial}/>
+      <EditModal isVisible={editModal} onClose={closeEditModal} workoutId={longPressId} onDelete={() => deleteFromWorkout(longPressId)}/>
+      <TutorialModal isVisible={modal} onClose={handleCloseTutorial} />
     </View>
   )
 }
