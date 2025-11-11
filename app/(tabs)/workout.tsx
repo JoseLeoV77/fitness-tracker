@@ -172,10 +172,7 @@ const Workout = () => {
         }}
         ListEmptyComponent={()=> <Text className='color-white'>Create some workouts!</Text>}
         ListFooterComponent={()=>(
-          <View className='flex flex-col w-28 h-28 gap-2 items-center justify-center rounded-3xl p-4 bg-slate-100 border-2 border-blue-800'>
-            <CreateButton href='CreateWorkout'/>
-            <Text className='text-center'>Add a Workout!</Text>
-          </View>
+        <CreateButton href='CreateWorkout' addText='Workout'/>
         )}
         />
       <EditModal isVisible={editModal} onClose={closeEditModal} workoutId={longPressId} onDelete={() => deleteFromWorkout(longPressId)}/>

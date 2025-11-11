@@ -6,7 +6,7 @@ import './global.css'
 
 import { schema } from '../db/schema.js';
 
-export const DATABASE_NAME = 'fitness_v5'
+export const DATABASE_NAME = 'fitness_v10'
 
 async function initDb(db: any) {
   try {
@@ -22,7 +22,6 @@ async function initDb(db: any) {
     console.error("Failed to initialize database", error);
   }
 }
-
 
 export default function RootLayout() {
 

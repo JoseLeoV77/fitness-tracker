@@ -57,6 +57,7 @@ CREATE TABLE `workouts_to_exercises` (
 	`order` integer NOT NULL,
 	`superset_id` integer,
 	`reps` integer DEFAULT 0,
+	`sets` integer DEFAULT 1,
 	FOREIGN KEY (`exercise_id`) REFERENCES `exercises`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`workout_id`) REFERENCES `workouts`(`id`) ON UPDATE no action ON DELETE cascade
 );

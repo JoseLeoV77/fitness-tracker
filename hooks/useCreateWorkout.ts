@@ -60,18 +60,18 @@ export const useCreateWorkout = () => {
             const supersetId = Date.now() + index; 
 
             await db.runAsync(
-                'INSERT INTO workouts_to_exercises (workout_id, exercise_id, `order`, superset_id, reps) VALUES (?, ?, ?, ?, ?)',
-                [newWorkoutId, mainExerciseId, order, supersetId, exercise.targetReps]
+                'INSERT INTO workouts_to_exercises (workout_id, exercise_id, `order`, superset_id, reps, sets) VALUES (?, ?, ?, ?, ?, ?)',
+                [newWorkoutId, mainExerciseId, order, supersetId, exercise.targetReps, exercise.targetSets]
             );
 
             await db.runAsync(
-              'INSERT INTO workouts_to_exercises (workout_id, exercise_id, `order`, superset_id, reps) VALUES (?, ?, ?, ?, ?)',
-              [newWorkoutId, supersetExerciseId, order, supersetId, exercise.additionalReps]
+              'INSERT INTO workouts_to_exercises (workout_id, exercise_id, `order`, superset_id, reps) VALUES (?, ?, ?, ?, ?, ?)',
+              [newWorkoutId, supersetExerciseId, order, supersetId, exercise.additionalReps, exercise.targetSets]
             );
           } else {
             await db.runAsync(
-              'INSERT INTO workouts_to_exercises (workout_id, exercise_id, `order`, reps) VALUES (?, ?, ?, ?)',
-              [newWorkoutId, mainExerciseId, order, exercise.targetReps]
+              'INSERT INTO workouts_to_exercises (workout_id, exercise_id, `order`, reps, sets) VALUES (?, ?, ?, ?, ?)',
+              [newWorkoutId, mainExerciseId, order, exercise.targetReps, exercise.targetSets]
             );
           }
         }

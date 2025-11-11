@@ -6,7 +6,7 @@ export default function nutrition() {
   return (
     <View className='flex-1 bg-background'>
       <Text>nutrition</Text>
-      <CreateButton href='CreateRecipe' />
+      <CreateButton href='CreateRecipe' addText='Recipe'/>
     </View>
   )
 }
